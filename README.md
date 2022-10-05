@@ -2,7 +2,7 @@
 # Dialog Flow Script Parser
 
 **Dialog Flow Script Parser** is python module add-on for [Dialog Flow Framework](https://github.com/deeppavlovteam/dialog_flow_framework), a free and open-source software stack for creating chatbots, released under the terms of Apache License 2.0.
-
+<!-- TODO: Возможно, в будущем стоит расписать, для чего вообще нужна сериализация в yaml -->
 
 [Dialog Flow Script Parser](../..) allows you to parse python files in order to extract inputs and dictionaries.
 [![Codestyle](https://github.com/deeppavlovteam/dialog_flow_parser/actions/workflows/codestyle.yml/badge.svg)](https://github.com/deeppavlovteam/dialog_flow_parser/actions)

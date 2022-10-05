@@ -31,105 +31,72 @@ def is_file(arg: str) -> Path:
     raise argparse.ArgumentTypeError(f"Not a file: {path}")
 
 
+py2file_parser = argparse.ArgumentParser()
+py2file_parser.add_argument(
+    "root_file",
+    metavar="ROOT_FILE",
+    help="Python file to start parsing with",
+    type=is_file,
+)
+py2file_parser.add_argument(
+    "project_root_dir",
+    metavar="PROJECT_ROOT_DIR",
+    help="Directory that contains all the local files required to run ROOT_FILE",
+    type=is_dir,
+)
+py2file_parser.add_argument(
+    "output_file",
+    metavar="OUTPUT_FILE",
+    help="File to store parser output in",
+    type=str,
+)
+py2file_parser.add_argument(
+    "--requirements",
+    metavar="REQUIREMENTS",
+    help="File with project requirements to override those collected by parser",
+    type=is_file,
+    required=False,
+    default=None,
+)
+
+file2py_parser = argparse.ArgumentParser()
+file2py_parser.add_argument(
+    "input_file",
+    metavar="INPUT_FILE",
+    help="Yaml file to load",
+    type=is_file,
+)
+file2py_parser.add_argument(
+    "extract_to_directory",
+    metavar="EXTRACT_TO_DIRECTORY",
+    help="Path to the directory to extract project to",
+    type=is_dir,
+)
+
+
 def py2yaml_cli():
     """:py:func:`.py2yaml` cli wrapper"""
-    parser = argparse.ArgumentParser(description=py2yaml.__doc__.split("\n\n", maxsplit=1)[0])
-    parser.add_argument(
-        "root_file",
-        metavar="ROOT_FILE",
-        help="Python file to start parsing with",
-        type=is_file,
-    )
-    parser.add_argument(
-        "project_root_dir",
-        metavar="PROJECT_ROOT_DIR",
-        help="Directory that contains all the local files required to run ROOT_FILE",
-        type=is_dir,
-    )
-    parser.add_argument(
-        "output_file",
-        metavar="OUTPUT_FILE",
-        help="Yaml file to store parser output in",
-        type=str,
-    )
-    parser.add_argument(
-        "--requirements",
-        metavar="REQUIREMENTS",
-        help="File with project requirements to override those collected by parser",
-        type=is_file,
-        required=False,
-        default=None,
-    )
+    parser = argparse.ArgumentParser(parents=[py2file_parser], description=py2yaml.__doc__.split("\n\n", maxsplit=1)[0])
     args = parser.parse_args()
     py2yaml(**vars(args))
 
 
 def py2graph_cli():
     """:py:func:`.py2graph` cli wrapper"""
-    parser = argparse.ArgumentParser(description=py2graph.__doc__.split("\n\n", maxsplit=1)[0])
-    parser.add_argument(
-        "root_file",
-        metavar="ROOT_FILE",
-        help="Python file to start parsing with",
-        type=is_file,
-    )
-    parser.add_argument(
-        "project_root_dir",
-        metavar="PROJECT_ROOT_DIR",
-        help="Directory that contains all the local files required to run ROOT_FILE",
-        type=is_dir,
-    )
-    parser.add_argument(
-        "output_file",
-        metavar="OUTPUT_FILE",
-        help="Yaml file to store parser output in",
-        type=str,
-    )
-    parser.add_argument(
-        "--requirements",
-        metavar="REQUIREMENTS",
-        help="File with project requirements to override those collected by parser",
-        type=is_file,
-        required=False,
-        default=None,
-    )
+    parser = argparse.ArgumentParser(parents=[py2file_parser], description=py2graph.__doc__.split("\n\n", maxsplit=1)[0])
     args = parser.parse_args()
     py2graph(**vars(args))
 
 
 def yaml2py_cli():
     """:py:func:`.yaml2py` cli wrapper"""
-    parser = argparse.ArgumentParser(description=yaml2py.__doc__.split("\n\n", maxsplit=1)[0])
-    parser.add_argument(
-        "yaml_file",
-        metavar="YAML_FILE",
-        help="Yaml file to load",
-        type=is_file,
-    )
-    parser.add_argument(
-        "extract_to_directory",
-        metavar="EXTRACT_TO_DIRECTORY",
-        help="Path to the directory to extract project to",
-        type=is_dir,
-    )
+    parser = argparse.ArgumentParser(parents=[file2py_parser], description=yaml2py.__doc__.split("\n\n", maxsplit=1)[0])
     args = parser.parse_args()
     yaml2py(**vars(args))
 
 
 def graph2py_cli():
     """:py:func:`.graph2py` cli wrapper"""
-    parser = argparse.ArgumentParser(description=graph2py.__doc__.split("\n\n", maxsplit=1)[0])
-    parser.add_argument(
-        "graph_file",
-        metavar="GRAPH_FILE",
-        help="Graph file to load",
-        type=is_file,
-    )
-    parser.add_argument(
-        "extract_to_directory",
-        metavar="EXTRACT_TO_DIRECTORY",
-        help="Path to the directory to extract project to",
-        type=is_dir,
-    )
+    parser = argparse.ArgumentParser(parents=[file2py_parser], description=graph2py.__doc__.split("\n\n", maxsplit=1)[0])
     args = parser.parse_args()
     graph2py(**vars(args))
