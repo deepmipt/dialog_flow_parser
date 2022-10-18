@@ -1,5 +1,5 @@
 """This module contains a class that parses a file
-"""
+""" #TODO: может, переименовать в parser? По аналогии с recursive_parser.py
 import logging
 import typing as tp
 from pathlib import Path

@@ -121,35 +121,35 @@ def dict2py(
 
 
 def yaml2py(
-    yaml_file: Path,
+    input_file: Path,
     extract_to_directory: Path,
 ):
     """Extract project from a yaml file to a directory
 
-    :param yaml_file: Yaml file to extract from
-    :type yaml_file: :py:class:`.Path`
+    :param input_file: Yaml file to extract from
+    :type input_file: :py:class:`.Path`
     :param extract_to_directory: Directory to extract to
     :type extract_to_directory: :py:class:`.Path`
     :return: None
     """
-    with open(Path(yaml_file).absolute(), "r", encoding="utf-8") as infile:
+    with open(Path(input_file).absolute(), "r", encoding="utf-8") as infile:
         processed_file = yaml_dumper_loader.load(infile)
     dict2py(processed_file, extract_to_directory)
 
 
 def graph2py(
-    graph_file: Path,
+    input_file: Path,
     extract_to_directory: Path,
 ):
     """Extract project from a graph file to a directory
 
-    :param graph_file: Graph file to extract from
-    :type graph_file: :py:class:`.Path`
+    :param input_file: Graph file to extract from
+    :type input_file: :py:class:`.Path`
     :param extract_to_directory: Directory to extract to
     :type extract_to_directory: :py:class:`.Path`
     :return: None
     """
-    with open(Path(graph_file).absolute(), "r", encoding="utf-8") as infile:
+    with open(Path(input_file).absolute(), "r", encoding="utf-8") as infile:
         processed_file = json.load(infile)
     graph: nx.MultiDiGraph = nx.readwrite.node_link_graph(processed_file)
     dp = DictProcessor()
