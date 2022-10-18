@@ -63,7 +63,7 @@ file2py_parser = argparse.ArgumentParser()
 file2py_parser.add_argument(
     "input_file",
     metavar="INPUT_FILE",
-    help="Yaml file to load",
+    help="File to load",
     type=is_file,
 )
 file2py_parser.add_argument(
