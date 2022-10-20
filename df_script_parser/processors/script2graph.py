@@ -34,9 +34,9 @@ def get_destination(label: StringTag, resolve_name: tp.Callable, kwargs: tp.Opti
 
     flow = kwargs["script"].get(kwargs["current_flow"], {})
     if label in flow:
-        return kwargs["current_flow"].absolute_value, label.absolute_value # in case only node label was provided
+        return kwargs["current_flow"].absolute_value, label.absolute_value  # in case only node label was provided
 
-    call_name = label.absolute_value.rpartition("(")[0].split(".")[-1] # in case lbl function was provided
+    call_name = label.absolute_value.rpartition("(")[0].split(".")[-1]  # in case lbl function was provided
     if not call_name in ["forward", "repeat", "backward", "to_start", "to_fallback"]:
         return ("NONE",)
     else:
@@ -96,7 +96,7 @@ def script2graph(
             label, label_ref = traversed_path[len(node_name) + 1], copy(paths[len(node_name) + 1])
         if isinstance(label, (dict, Call)):
             raise RuntimeError(f"Label is not a ``StringTag``: {label}")
-        
+
         destination_kwargs = {
             "start_label": start_label,
             "fallback_label": fallback_label,
@@ -104,8 +104,10 @@ def script2graph(
             "current_node": traversed_path[1],
             "script": script,
         }
-        
-        destination = get_destination(traversed_path[len(node_name) + 1], project.resolve_name, kwargs=destination_kwargs)
+
+        destination = get_destination(
+            traversed_path[len(node_name) + 1], project.resolve_name, kwargs=destination_kwargs
+        )
         project.graph.add_edge(
             node_name,
             destination,

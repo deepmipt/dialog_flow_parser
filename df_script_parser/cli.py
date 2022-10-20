@@ -94,7 +94,9 @@ def py2yaml_cli():
 
 def py2graph_cli():
     """:py:func:`.py2graph` cli wrapper"""
-    parser = argparse.ArgumentParser(parents=[py2file_parser], description=py2graph.__doc__.split("\n\n", maxsplit=1)[0])
+    parser = argparse.ArgumentParser(
+        parents=[py2file_parser], description=py2graph.__doc__.split("\n\n", maxsplit=1)[0]
+    )
     args = parser.parse_args()
     py2graph(**vars(args))
 
@@ -108,6 +110,8 @@ def yaml2py_cli():
 
 def graph2py_cli():
     """:py:func:`.graph2py` cli wrapper"""
-    parser = argparse.ArgumentParser(parents=[file2py_parser], description=graph2py.__doc__.split("\n\n", maxsplit=1)[0])
+    parser = argparse.ArgumentParser(
+        parents=[file2py_parser], description=graph2py.__doc__.split("\n\n", maxsplit=1)[0]
+    )
     args = parser.parse_args()
     graph2py(**vars(args))
