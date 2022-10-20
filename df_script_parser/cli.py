@@ -33,24 +33,31 @@ def is_file(arg: str) -> Path:
 
 py2file_parser = argparse.ArgumentParser()
 py2file_parser.add_argument(
-    "root_file",
+    "-rf",
+    "--root_file",
+    required=True,
     metavar="ROOT_FILE",
     help="Python file to start parsing with",
     type=is_file,
 )
 py2file_parser.add_argument(
-    "project_root_dir",
+    "-d",
+    "--project_root_dir",
+    required=True,
     metavar="PROJECT_ROOT_DIR",
     help="Directory that contains all the local files required to run ROOT_FILE",
     type=is_dir,
 )
 py2file_parser.add_argument(
-    "output_file",
+    "-o",
+    "--output_file",
+    required=True,
     metavar="OUTPUT_FILE",
     help="File to store parser output in",
     type=str,
 )
 py2file_parser.add_argument(
+    "-r",
     "--requirements",
     metavar="REQUIREMENTS",
     help="File with project requirements to override those collected by parser",
@@ -61,14 +68,18 @@ py2file_parser.add_argument(
 
 file2py_parser = argparse.ArgumentParser()
 file2py_parser.add_argument(
-    "input_file",
+    "-i",
+    "--input_file",
+    required=True,
     metavar="INPUT_FILE",
     help="File to load",
     type=is_file,
 )
 file2py_parser.add_argument(
-    "extract_to_directory",
-    metavar="EXTRACT_TO_DIRECTORY",
+    "-od",
+    "--output_dir",
+    required=True,
+    metavar="OUTPUT_DIR",
     help="Path to the directory to extract project to",
     type=is_dir,
 )

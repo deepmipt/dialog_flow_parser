@@ -68,13 +68,13 @@ df_script_parser.yaml2py --help
 ```
 
 ```
-usage: df_script_parser.yaml2py [-h] YAML_FILE EXTRACT_TO_DIRECTORY
+usage: df_script_parser.yaml2py [-h] YAML_FILE OUTPUT_DIR
 
 Extract project from a yaml file to a directory
 
 positional arguments:
   YAML_FILE             Yaml file to load
-  EXTRACT_TO_DIRECTORY  Path to the directory to extract project to
+  OUTPUT_DIR  Path to the directory to extract project to
 
 optional arguments:
   -h, --help            show this help message and exit

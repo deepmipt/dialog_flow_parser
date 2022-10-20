@@ -1,6 +1,7 @@
 """This module contains functions for converting a script to a :py:mod:`.networkx`
 """
 import typing as tp
+import logging
 from copy import copy
 
 from df_script_parser.utils.code_wrappers import StringTag, Python, String
@@ -31,7 +32,11 @@ def get_destination(label: StringTag, resolve_name: tp.Callable, kwargs: tp.Opti
                 if isinstance(flow, String) and isinstance(node, String):
                     return flow.display_value, node.display_value
 
-    call_name = label.absolute_value.rpartition("(")[0].split(".")[-1]
+    flow = kwargs["script"].get(kwargs["current_flow"], {})
+    if label in flow:
+        return kwargs["current_flow"].absolute_value, label.absolute_value # in case only node label was provided
+
+    call_name = label.absolute_value.rpartition("(")[0].split(".")[-1] # in case lbl function was provided
     if not call_name in ["forward", "repeat", "backward", "to_start", "to_fallback"]:
         return ("NONE",)
     else:
@@ -40,7 +45,7 @@ def get_destination(label: StringTag, resolve_name: tp.Callable, kwargs: tp.Opti
         elif call_name == "to_start":
             return kwargs["start_label"]
         elif call_name == "repeat":
-            return kwargs["current_label"]
+            return kwargs["current_flow"].absolute_value, kwargs["current_node"].absolute_value
         elif call_name == "backward":
             return get_by_index_shifting(**kwargs, increment_flag=False)
         elif call_name == "forward":
@@ -95,7 +100,8 @@ def script2graph(
         destination_kwargs = {
             "start_label": start_label,
             "fallback_label": fallback_label,
-            "current_label": node_name,
+            "current_flow": traversed_path[0],
+            "current_node": traversed_path[1],
             "script": script,
         }
         
@@ -112,24 +118,24 @@ def script2graph(
 
 def get_by_index_shifting(
     script: dict,
-    current_label: tuple,
+    current_flow: String,
+    current_node: String,
     fallback_label: tuple,
     increment_flag: bool = True,
     cyclicality_flag: bool = True,
     **kwargs,
-) -> tuple:
-    if current_label == ("GLOBAL",):
+) -> tp.Tuple[str, str]:
+    if current_flow.absolute_value == "GLOBAL":
         return fallback_label
-    flow_label, node_label = current_label
-    labels = list(script.get(flow_label, {}))
+    labels = list(script.get(current_flow, {}))
 
-    if node_label not in labels:
+    if current_node not in labels:
         return fallback_label
 
-    label_index = labels.index(node_label)
+    label_index = labels.index(current_node)
     label_index = label_index + 1 if increment_flag else label_index - 1
     if not (cyclicality_flag or (0 <= label_index < len(labels))):
         return fallback_label
     label_index %= len(labels)
 
-    return flow_label, labels[label_index]
+    return current_flow.absolute_value, labels[label_index].absolute_value
