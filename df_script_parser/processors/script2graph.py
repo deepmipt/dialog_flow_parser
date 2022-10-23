@@ -45,7 +45,9 @@ def get_destination(label: StringTag, resolve_name: tp.Callable, kwargs: tp.Opti
         elif call_name == "to_start":
             return kwargs["start_label"]
         elif call_name == "repeat":
-            return kwargs["current_flow"].absolute_value, kwargs["current_node"].absolute_value
+            if kwargs["current_flow"].display_value == "GLOBAL":
+                return ("NONE",)
+            return kwargs["current_flow"].display_value, kwargs["current_node"].display_value
         elif call_name == "backward":
             return get_by_index_shifting(**kwargs, increment_flag=False)
         elif call_name == "forward":
@@ -70,16 +72,22 @@ def script2graph(
 
     if project.resolve_name(traversed_path[0]) in keywords_dict["GLOBAL"]:
         node_name: tp.Union[tp.Tuple[str], tp.Tuple[str, str]] = ("GLOBAL",)
+        additional_data = {}
     else:
         node_name = (
             project.resolve_name(traversed_path[0]).absolute_value,
             project.resolve_name(traversed_path[1]).absolute_value,
         )
+        additional_data = {
+            "response": script.get(traversed_path[0], {}).get(traversed_path[1], {}).get(keywords_dict["RESPONSE"][0]),
+            "misc": script.get(traversed_path[0], {}).get(traversed_path[1], {}).get(keywords_dict["MISC"][0]),
+        }
 
     project.graph.add_node(
         node_name,
         ref=copy(paths[len(node_name)]),
         local=project.resolve_name(traversed_path[1]) in keywords_dict["LOCAL"],
+        **{key: value for key, value in additional_data.items() if value is not None},
     )
 
     if project.resolve_name(traversed_path[len(node_name)]) in keywords_dict["TRANSITIONS"]:
@@ -127,7 +135,7 @@ def get_by_index_shifting(
     cyclicality_flag: bool = True,
     **kwargs,
 ) -> tp.Tuple[str, str]:
-    if current_flow.absolute_value == "GLOBAL":
+    if current_flow.display_value == "GLOBAL":
         return fallback_label
     labels = list(script.get(current_flow, {}))
 
@@ -140,4 +148,4 @@ def get_by_index_shifting(
         return fallback_label
     label_index %= len(labels)
 
-    return current_flow.absolute_value, labels[label_index].absolute_value
+    return current_flow.display_value, labels[label_index].display_value
