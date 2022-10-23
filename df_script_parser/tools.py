@@ -75,12 +75,12 @@ def py2graph(
 
 def dict2py(
     dictionary: dict,
-    extract_to_directory: Path,
+    output_dir: Path,
 ):
     """Extract a project from a dictionary to a directory
 
     :param dictionary: Dictionary as one returned by :py:meth:`.RecursiveParser.to_dict`
-    :param extract_to_directory: Path to a directory to extract files to
+    :param output_dir: Path to a directory to extract files to
     :return: None
     """
     namespaces = dictionary.get("namespaces")
@@ -92,7 +92,7 @@ def dict2py(
 
     for namespace in namespaces:
         path = namespace.split(".")
-        path_to_file = Path(extract_to_directory).absolute().joinpath(*path[:-1])
+        path_to_file = Path(output_dir).absolute().joinpath(*path[:-1])
         if not path_to_file.exists():
             path_to_file.mkdir(parents=True, exist_ok=True)
         path_to_file = path_to_file / (str(path[-1]) + ".py")
@@ -116,37 +116,37 @@ def dict2py(
 
                 dict_processor.add_name(name)
         format_file_in_place(path_to_file, fast=False, mode=FileMode(), write_back=WriteBack.YES)
-    with open(extract_to_directory / "requirements.txt", "w", encoding="utf-8") as reqs:
+    with open(output_dir / "requirements.txt", "w", encoding="utf-8") as reqs:
         reqs.write("\n".join(requirements))
 
 
 def yaml2py(
     input_file: Path,
-    extract_to_directory: Path,
+    output_dir: Path,
 ):
     """Extract project from a yaml file to a directory
 
     :param input_file: Yaml file to extract from
     :type input_file: :py:class:`.Path`
-    :param extract_to_directory: Directory to extract to
-    :type extract_to_directory: :py:class:`.Path`
+    :param output_dir: Directory to extract to
+    :type output_dir: :py:class:`.Path`
     :return: None
     """
     with open(Path(input_file).absolute(), "r", encoding="utf-8") as infile:
         processed_file = yaml_dumper_loader.load(infile)
-    dict2py(processed_file, extract_to_directory)
+    dict2py(processed_file, output_dir)
 
 
 def graph2py(
     input_file: Path,
-    extract_to_directory: Path,
+    output_dir: Path,
 ):
     """Extract project from a graph file to a directory
 
     :param input_file: Graph file to extract from
     :type input_file: :py:class:`.Path`
-    :param extract_to_directory: Directory to extract to
-    :type extract_to_directory: :py:class:`.Path`
+    :param output_dir: Directory to extract to
+    :type output_dir: :py:class:`.Path`
     :return: None
     """
     with open(Path(input_file).absolute(), "r", encoding="utf-8") as infile:
@@ -154,4 +154,4 @@ def graph2py(
     graph: nx.MultiDiGraph = nx.readwrite.node_link_graph(processed_file)
     dp = DictProcessor()
     dp.process_element = dp.from_yaml
-    dict2py(dp(graph.graph["script"]), extract_to_directory)
+    dict2py(dp(graph.graph["script"]), output_dir)

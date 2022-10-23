@@ -246,7 +246,12 @@ class RecursiveParser:
         self.graph = nx.MultiDiGraph()
 
         self.traverse_dict(script, [path], validate_path, {"project": self})
-        self.traverse_dict(script, [path], script2graph, {"project": self})
+        self.traverse_dict(
+            script,
+            [path],
+            script2graph,
+            {"project": self, "script": script, "start_label": start_label, "fallback_label": fallback_label},
+        )
 
         for label in [start_label, fallback_label]:
             if label:
